@@ -10,8 +10,8 @@ const WORK_EXPERIENCE = [
     period: "July 2024 – Feb 2025",
     logoUrl: "/work/gbikna.jpg",
     points: [
-      "Led the redesign of the fintech admin dashboard and integrated crypto payments, reducing admin processing time by 40%.",
-      "Restructured the codebase and implemented RBAC, defining custom privileges and improving future maintainability.",
+      "Directed the frontend redesign of a fintech administration platform and spearheaded crypto payment integrations to streamline operations.",
+      "Enhanced system security and maintainability through the implementation of a robust Role-Based Access Control (RBAC) framework.",
     ],
   },
   {
@@ -20,8 +20,8 @@ const WORK_EXPERIENCE = [
     period: "June 2024 – July 2025",
     logoUrl: "/work/dokto.svg",
     points: [
-      "Architected a scalable telehealth platform using Next.js and Radix UI, achieving sub-2-second load times for critical healthcare views.",
-      "Orchestrated real-time data synchronization and managed frontend architectural decisions for a cross-functional team.",
+      "Engineered a high-performance telehealth platform focusing on sub-second load times and optimized user experiences for healthcare workflows.",
+      "Directed frontend architectural strategy and real-time data synchronization for a multi-disciplinary development team.",
     ],
   },
   {
@@ -30,8 +30,8 @@ const WORK_EXPERIENCE = [
     period: "Nov 2023 – June 2024",
     logoUrl: "/work/schoolable.jpg",
     points: [
-      "Led the initial development of the Admin Frontend, resulting in a 30% increase in operational efficiency through improved data visualization.",
-      "Designed modular, accessible frontend architecture and collaborated with backend engineers for seamless API integration.",
+      "Spearheaded the development of administrative interfaces, significantly improving operational efficiency through advanced data visualization techniques.",
+      "Collaborated on cross-functional architecture to ensure seamless service integration and accessible user experiences.",
     ],
   },
   {
