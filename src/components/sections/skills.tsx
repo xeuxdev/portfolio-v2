@@ -21,11 +21,12 @@ const SKILLS = [
 
 export function SkillsSection() {
   return (
-    <section id="skills" className="w-full max-w-4xl overflow-hidden">
+    <section id="skills" className="w-full max-w-2xl overflow-hidden">
       <BlurFade delay={0.5} inView>
-        <h2 className="mb-8 text-center text-3xl font-bold tracking-tight">
-          Skills
-        </h2>
+        <div className="mb-8">
+          <p className="eyebrow mb-2">Stack</p>
+          <h2 className="font-display text-4xl italic">Skills</h2>
+        </div>
         <div className="relative flex h-[100px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background">
           <Marquee pauseOnHover className="[--duration:20s]">
             {SKILLS.map((skill, i) => (

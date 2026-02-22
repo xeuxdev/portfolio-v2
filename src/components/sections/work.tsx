@@ -68,9 +68,10 @@ export function WorkSection() {
   return (
     <section id="work" className="w-full max-w-2xl">
       <BlurFade delay={0.3} inView>
-        <h2 className="mb-8 text-3xl font-bold tracking-tight">
-          Work Experience
-        </h2>
+        <div className="mb-8">
+          <p className="eyebrow mb-2">Experience</p>
+          <h2 className="font-display text-4xl italic">Work</h2>
+        </div>
         <div className="flex flex-col gap-8">
           {WORK_EXPERIENCE.map((job, i) => (
             <div

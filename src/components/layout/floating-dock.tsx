@@ -8,7 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Briefcase, FolderOpen, HomeIcon } from "lucide-react";
+import { Briefcase, BookOpen, FolderOpen, HomeIcon } from "lucide-react";
 import Link from "next/link";
 import { Icons } from "../ui/icons";
 
@@ -68,6 +68,24 @@ export function FloatingDock() {
               </TooltipTrigger>
               <TooltipContent>
                 <p>Projects</p>
+              </TooltipContent>
+            </Tooltip>
+          </DockIcon>
+          <DockIcon>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link href="/blog">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full h-10 w-10"
+                  >
+                    <BookOpen className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Blog</p>
               </TooltipContent>
             </Tooltip>
           </DockIcon>

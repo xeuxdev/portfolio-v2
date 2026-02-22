@@ -10,23 +10,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Globe } from "lucide-react";
+import { ArrowUpRight, Globe, LayoutGrid, List } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { Icons } from "../ui/icons";
 
 const PROJECTS = [
-  // {
-  //   title: "Little App",
-  //   dates: "2023 - Present",
-  //   description:
-  //     "A fintech solution for families, offering debit cards and financial education tools for children with parental management.",
-  //   tags: ["Fintech", "Mobile", "React Native"],
-  //   links: {
-  //     website: "https://trylittleapp.com/",
-  //     source: "#",
-  //   },
-  //   image: "",
-  // },
   {
     title: "Queen Mother's Universal Foundation",
     dates: "2022 - Present",
@@ -137,83 +126,189 @@ const PROJECTS = [
   },
 ];
 
+type ViewMode = "grid" | "list";
+
 export function ProjectsSection() {
+  const [view, setView] = useState<ViewMode>("grid");
+
   return (
-    <section id="projects" className="w-full max-w-5xl px-4 md:px-0">
+    <section id="projects" className="w-full max-w-2xl">
       <BlurFade delay={0.6} inView>
-        <h2 className="mb-6 text-center text-2xl font-bold tracking-tight">
-          Featured Work
-        </h2>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {PROJECTS.map((project, i) => (
-            <Card
-              key={i}
-              className="group flex flex-col overflow-hidden border-neutral-200 dark:border-neutral-800 transition-all hover:shadow-lg hover:-translate-y-1 h-full p-0 gap-3"
+        {/* Header with view toggle */}
+        <div className="flex items-end justify-between mb-6">
+          <div>
+            <p className="eyebrow mb-2">Portfolio</p>
+            <h2 className="font-display text-4xl italic">Featured Work</h2>
+          </div>
+
+          {/* Toggle buttons */}
+          <div className="flex items-center gap-0.5 p-0.5 rounded-lg border border-border/60 bg-muted/30">
+            <button
+              id="projects-grid-view"
+              onClick={() => setView("grid")}
+              aria-label="Grid view"
+              className={`p-1.5 rounded-md transition-all duration-150 ${
+                view === "grid"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              {project.image ? (
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="h-48 w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                />
-              ) : (
-                <div className="h-48 w-full bg-linear-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:scale-105 transition-transform duration-500 ease-out flex items-center justify-center">
-                  <Globe className="h-8 w-8 text-neutral-400 dark:text-neutral-600" />
-                </div>
-              )}
-              <CardHeader className="">
-                <CardTitle className="text-md font-bold line-clamp-1">
-                  {project.title}
-                </CardTitle>
-                <div className="text-[10px] text-muted-foreground">
-                  {project.dates}
-                </div>
-              </CardHeader>
-              <CardContent className="flex flex-col gap-2 grow">
-                <p className="text-xs text-muted-foreground line-clamp-4 leading-relaxed">
-                  {project.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5 mt-2">
-                  {project.tags.map((tag) => (
-                    <Badge
-                      key={tag}
-                      variant="secondary"
-                      className="px-1.5 py-0 text-[10px]"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-              <CardFooter className="flex gap-2 px-4 pb-4 pt-0 mt-auto">
-                <Link
-                  href={project.links.website}
-                  target="_blank"
-                  className="flex-1"
-                >
-                  <Button size="sm" className="w-full gap-2 h-7 text-xs">
-                    <Globe className="h-3 w-3" /> Website
-                  </Button>
-                </Link>
-                {project.links.source !== "#" && (
+              <LayoutGrid className="h-3.5 w-3.5" />
+            </button>
+            <button
+              id="projects-list-view"
+              onClick={() => setView("list")}
+              aria-label="List view"
+              className={`p-1.5 rounded-md transition-all duration-150 ${
+                view === "list"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <List className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
+        {/* Grid view */}
+        {view === "grid" && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {PROJECTS.map((project, i) => (
+              <Card
+                key={i}
+                className="group flex flex-col overflow-hidden border-neutral-200 dark:border-neutral-800 transition-all hover:shadow-lg hover:-translate-y-0.5 h-full p-0 gap-3"
+              >
+                {project.image ? (
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="h-40 w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="h-40 w-full bg-linear-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:scale-105 transition-transform duration-500 ease-out flex items-center justify-center">
+                    <Globe className="h-8 w-8 text-neutral-400 dark:text-neutral-600" />
+                  </div>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-sm font-semibold line-clamp-1">
+                    {project.title}
+                  </CardTitle>
+                  <div className="font-mono text-[10px] text-muted-foreground">
+                    {project.dates}
+                  </div>
+                </CardHeader>
+                <CardContent className="flex flex-col gap-2 grow">
+                  <p className="text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                    {project.description}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {project.tags.map((tag) => (
+                      <Badge
+                        key={tag}
+                        variant="secondary"
+                        className="px-1.5 py-0 text-[10px] font-normal"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                  </div>
+                </CardContent>
+                <CardFooter className="flex gap-2 px-4 pb-4 pt-0 mt-auto">
                   <Link
-                    href={project.links.source}
+                    href={project.links.website}
                     target="_blank"
                     className="flex-1"
                   >
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="w-full gap-1.5 h-6 text-[10px]"
-                    >
-                      <Icons.github className="size-3" /> Source
+                    <Button size="sm" className="w-full gap-2 h-7 text-xs">
+                      <Globe className="h-3 w-3" /> Website
                     </Button>
                   </Link>
-                )}
-              </CardFooter>
-            </Card>
-          ))}
-        </div>
+                  {project.links.source !== "#" && (
+                    <Link
+                      href={project.links.source}
+                      target="_blank"
+                      className="flex-1"
+                    >
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full gap-1.5 h-7 text-xs"
+                      >
+                        <Icons.github className="size-3" /> Source
+                      </Button>
+                    </Link>
+                  )}
+                </CardFooter>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* List view */}
+        {view === "list" && (
+          <ol className="flex flex-col">
+            {PROJECTS.map((project, i) => (
+              <li key={i}>
+                <div className="group grid grid-cols-[2rem_1fr] gap-x-4 items-start py-4 border-b border-border/60 last:border-0">
+                  {/* Index */}
+                  <span className="font-mono text-[11px] text-muted-foreground pt-[3px] select-none tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+
+                  <div className="min-w-0 flex flex-col gap-1.5">
+                    {/* Title row */}
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="text-sm font-medium text-foreground leading-snug">
+                        {project.title}
+                      </h3>
+                      {/* Action links */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        {project.links.source !== "#" && (
+                          <Link
+                            href={project.links.source}
+                            target="_blank"
+                            aria-label={`${project.title} source`}
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <Icons.github className="size-3.5" />
+                          </Link>
+                        )}
+                        <Link
+                          href={project.links.website}
+                          target="_blank"
+                          aria-label={`${project.title} website`}
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Description */}
+                    <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    {/* Meta */}
+                    <div className="flex items-center gap-2.5 mt-0.5 flex-wrap">
+                      <span className="font-mono text-[10px] text-muted-foreground">
+                        {project.dates}
+                      </span>
+                      {project.tags.slice(0, 3).map((tag) => (
+                        <span
+                          key={tag}
+                          className="font-mono text-[9px] uppercase tracking-wider text-muted-foreground"
+                        >
+                          · {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
       </BlurFade>
     </section>
   );

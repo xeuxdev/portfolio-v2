@@ -7,9 +7,12 @@ export function EducationSection() {
   return (
     <section id="education" className="w-full max-w-2xl">
       <BlurFade delay={0.4} inView>
-        <h2 className="mb-8 text-3xl font-bold tracking-tight">
-          Community & Education
-        </h2>
+        <div className="mb-8">
+          <p className="eyebrow mb-2">Background</p>
+          <h2 className="font-display text-4xl italic">
+            Community &amp; Education
+          </h2>
+        </div>
         <div className="flex flex-col gap-8">
           <div className="flex items-center justify-between">
             <div>

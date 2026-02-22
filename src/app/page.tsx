@@ -1,4 +1,5 @@
 import { FloatingDock } from "@/components/layout/floating-dock";
+import { BlogSection } from "@/components/sections/blog";
 import { ContactSection } from "@/components/sections/contact";
 import { EducationSection } from "@/components/sections/education";
 import { HeroSection } from "@/components/sections/hero";
@@ -41,6 +42,7 @@ export default function Portfolio() {
         <EducationSection />
         <SkillsSection />
         <ProjectsSection />
+        <BlogSection />
         <ContactSection />
       </main>
       <FloatingDock />
