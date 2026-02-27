@@ -12,11 +12,12 @@ const SKILLS = [
   "Node.js",
   "PostgreSQL",
   "Prisma",
-  "Framer Motion",
+  "Motion",
   "GraphQL",
   "Zustand",
   "Firebase",
   "Redux",
+  "Go",
 ];
 
 export function SkillsSection() {
@@ -27,7 +28,7 @@ export function SkillsSection() {
           <p className="eyebrow mb-2">Stack</p>
           <h2 className="font-display text-4xl italic">Skills</h2>
         </div>
-        <div className="relative flex h-[100px] w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background">
+        <div className="relative flex h-25 w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background">
           <Marquee pauseOnHover className="[--duration:20s]">
             {SKILLS.map((skill, i) => (
               <div

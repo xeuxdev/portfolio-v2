@@ -78,7 +78,7 @@ export default function BlogPage() {
                           className="group grid grid-cols-[2rem_1fr] gap-x-4 items-start py-5 border-b border-border/60 last:border-0 transition-colors duration-200"
                         >
                           {/* Counter — solid muted-foreground */}
-                          <span className="font-mono text-[11px] text-muted-foreground pt-[3px] select-none tabular-nums">
+                          <span className="font-mono text-[11px] text-muted-foreground pt-0.75 select-none tabular-nums">
                             {String(i + 1).padStart(2, "0")}
                           </span>
 

@@ -17,6 +17,18 @@ import { Icons } from "../ui/icons";
 
 const PROJECTS = [
   {
+    title: "Zero-Star Therapy",
+    dates: "2026",
+    description:
+      "A satirical AI web application that flips the script on modern 'therapy-speak' by acting as a deadpan, brutally honest 'anti-therapist'.",
+    tags: ["AI", "React 19", "Go", "Tailwind CSS"],
+    links: {
+      website: "https://zerostar.xeuxdev.com",
+      source: "#",
+    },
+    image: "/projects/zerostar.webp",
+  },
+  {
     title: "Queen Mother's Universal Foundation",
     dates: "2022 - Present",
     description:
@@ -251,7 +263,7 @@ export function ProjectsSection() {
               <li key={i}>
                 <div className="group grid grid-cols-[2rem_1fr] gap-x-4 items-start py-4 border-b border-border/60 last:border-0">
                   {/* Index */}
-                  <span className="font-mono text-[11px] text-muted-foreground pt-[3px] select-none tabular-nums">
+                  <span className="font-mono text-[11px] text-muted-foreground pt-0.75 select-none tabular-nums">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 

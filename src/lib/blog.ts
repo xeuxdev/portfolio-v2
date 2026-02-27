@@ -11,315 +11,377 @@ export type BlogPost = {
 
 export const BLOG_POSTS: BlogPost[] = [
   {
-    slug: "building-real-time-defi-dashboards",
-    title: "Building Real-Time DeFi Dashboards with WebSockets & React",
+    slug: "building-zero-star-therapy",
+    title: 'How I Built an Anti-Therapist AI to Tell People to "Go Get a Job"',
     excerpt:
-      "How I architected a high-performance DeFi dashboard that streams live on-chain data with sub-100ms updates, handling thousands of concurrent price feeds without killing the browser.",
-    date: "2025-01-15",
-    readTime: "8 min read",
-    tags: ["Web3", "React", "WebSockets", "Performance"],
-    featured: true,
-    content: `
-# Building Real-Time DeFi Dashboards with WebSockets & React
-
-When building the Magmar Infra dashboard, I faced a brutal challenge: display live price feeds for hundreds of token pairs simultaneously, update every 300ms, and keep the UI responsive. Here's how I solved it.
-
-## The Problem with Naive Implementations
-
-The obvious approach — subscribing to a WebSocket and calling \`setState\` on every message — falls apart at scale. At 20 messages/second across 50 pairs, you're triggering 1,000 React re-renders per second. The browser simply can't keep up.
-
-## Architecture: Batched Updates with a Shared Store
-
-The key insight is to decouple data ingestion from rendering:
-
-\`\`\`typescript
-// 1. Ingest raw WebSocket messages into a mutable buffer
-const priceBuffer = new Map<string, number>();
-
-ws.on("message", (data) => {
-  const { pair, price } = JSON.parse(data);
-  priceBuffer.set(pair, price);
-});
-
-// 2. Flush the buffer to React state on a fixed interval
-useEffect(() => {
-  const interval = setInterval(() => {
-    if (priceBuffer.size > 0) {
-      setPrices(new Map(priceBuffer));
-      priceBuffer.clear();
-    }
-  }, 100); // 10 FPS max render rate
-  return () => clearInterval(interval);
-}, []);
-\`\`\`
-
-This pattern reduced CPU usage by 82% and eliminated jank entirely.
-
-## Virtualization for Large Lists
-
-With hundreds of pairs visible, \`react-window\` is non-negotiable. The trick is using a stable \`itemKey\` function so that React can properly reconcile rows without full remounts:
-
-\`\`\`typescript
-<VariableSizeList
-  itemKey={(index, data) => data.pairs[index].id}
-  itemCount={pairs.length}
-  itemSize={(index) => rowHeights[index]}
->
-  {PriceRow}
-</VariableSizeList>
-\`\`\`
-
-## Color-Flash Animations Without Layout Thrash
-
-Price change flashes are a UX staple in trading UIs. The naive approach of toggling a class in JS causes forced reflows. Instead, use CSS custom properties:
-
-\`\`\`css
-.price-cell {
-  transition: color 0.3s ease;
-  color: oklch(var(--price-color));
-}
-\`\`\`
-
-\`\`\`typescript
-// Update the CSS variable directly — no React re-render
-cellRef.current?.style.setProperty(
-  "--price-color",
-  newPrice > oldPrice ? "0.72 0.17 142" : "0.65 0.25 27"
-);
-\`\`\`
-
-## Key Takeaways
-
-- **Never drive render frequency from WebSocket message rate** — buffer, then batch.
-- **Virtualize lists** aggressively; even 50 rows can cause issues with complex cell content.
-- **Use CSS custom properties** for micro-animations to avoid React rerenders entirely.
-- **Profile first** — Chrome's performance timeline is your best friend before optimizing anything.
-    `,
-  },
-  {
-    slug: "ab-testing-frontend-without-framework",
-    title: "A/B Testing UI Without a Framework: Lessons from a Fintech Product",
-    excerpt:
-      "I ran 14 A/B tests across a fintech dashboard with zero third-party experimentation tooling. Here's the lightweight infrastructure I built and what the data taught me about developer assumptions.",
-    date: "2025-02-10",
-    readTime: "6 min read",
-    tags: ["Fintech", "UX", "Performance", "TypeScript"],
-    featured: true,
-    content: `
-# A/B Testing UI Without a Framework
-
-At Gbikna, we needed to test several dashboard layout variants but couldn't justify the cost of Optimizely or LaunchDarkly for our scale. I built a minimal in-house system that served us well for 14 sequential experiments.
-
-## The Core: A Feature Flag Hook
-
-\`\`\`typescript
-type Experiment<T extends string> = {
-  name: string;
-  variants: Record<T, number>; // variant -> weight
-};
-
-function useExperiment<T extends string>(exp: Experiment<T>): T {
-  const userId = useUserId();
-  const hash = murmurhash(userId + exp.name);
-  
-  let cumulative = 0;
-  const roll = (hash % 100) / 100;
-  
-  for (const [variant, weight] of Object.entries(exp.variants)) {
-    cumulative += weight as number;
-    if (roll < cumulative) return variant as T;
-  }
-  
-  return Object.keys(exp.variants)[0] as T;
-}
-\`\`\`
-
-User assignment is deterministic — the same user always sees the same variant, which is critical for avoiding flickering and ensuring consistent experiences across sessions.
-
-## Logging Without a Data Warehouse
-
-We piped experiment exposure and conversion events to a simple Next.js API route that wrote to a PostgreSQL table. Not glamorous, but sufficient.
-
-\`\`\`typescript
-// Exposure logged on mount
-useEffect(() => {
-  logEvent("experiment_exposure", { experiment: "dashboard_layout", variant });
-}, [variant]);
-
-// Conversion logged on action
-const handleTransfer = () => {
-  logEvent("conversion", { experiment: "dashboard_layout", variant });
-  initiateTransfer();
-};
-\`\`\`
-
-## What the Data Revealed
-
-The most counterintuitive finding: our "compact" layout variant — which I assumed users would hate — outperformed the spacious default by 23% on task completion rate. Power users hated whitespace they couldn't disable.
-
-The second insight: colorful status badges (red/yellow/green) increased anxiety and support tickets. Neutral, text-based status labels with subtle icons performed dramatically better in a financial context.
-
-## Lesson
-
-Don't assume you know what your users want. Build the infrastructure to measure it, make it cheap to run experiments, and let the data challenge your instincts.
-    `,
-  },
-  {
-    slug: "account-abstraction-ux-patterns",
-    title: "Account Abstraction & UX: Making Web3 Feel Like Web2",
-    excerpt:
-      "ERC-4337 eliminates seed phrases and gas headaches, but the real challenge is the UX layer. Here's how I designed onboarding flows for Magmar Infra that get non-crypto users transacting in under 60 seconds.",
-    date: "2024-11-20",
-    readTime: "10 min read",
-    tags: ["Web3", "ERC-4337", "UX", "Account Abstraction"],
-    featured: false,
-    content: `
-# Account Abstraction & UX: Making Web3 Feel Like Web2
-
-ERC-4337 is a technical breakthrough, but users don't care about the internals. They care about: "Can I send money without storing 24 words in a notebook?"
-
-## The Old Onboarding Funnel (And Why It Fails)
-
-Traditional Web3 onboarding asks new users to:
-1. Install MetaMask
-2. Write down 12–24 seed words
-3. Fund their wallet with ETH for gas
-4. Sign transactions
-
-We measured a 78% drop-off at step 1. Users aren't afraid of crypto — they're afraid of responsibility for their own security.
-
-## The AA-Powered Flow
-
-With account abstraction, we replaced this with:
-1. **Social login** (Google/Twitter via passkey-linked smart account)
-2. **Gasless transactions** — a paymaster sponsoring initial transactions
-3. **Progressive disclosure** — advanced features revealed only after user confidence builds
-
-The smart account is created silently on first login. The user never sees an address or a seed phrase until they opt into "advanced mode."
-
-## Designing the Transaction Confirmation Modal
-
-The standard "Sign this cryptographic blob" experience is a UX crime. I replaced it with a human-readable summary:
-
-\`\`\`tsx
-function TransactionPreview({ tx }: { tx: ParsedTransaction }) {
-  return (
-    <div className="transaction-preview">
-      <TransactionIcon type={tx.type} />
-      <h2>Send {tx.amount} {tx.token}</h2>
-      <p>To: <ENSName address={tx.to} /></p>
-      <FeeEstimate sponsored={tx.sponsored} />
-      {tx.sponsored && (
-        <Badge variant="success">No gas fee — sponsored</Badge>
-      )}
-    </div>
-  );
-}
-\`\`\`
-
-The "sponsored" badge was crucial: users were confused why there was no gas fee, and without explanation, 40% of them assumed something was wrong.
-
-## Error Handling That Doesn't Terrify Users
-
-When a transaction fails, never show raw revert reasons. Map common errors to human language:
-
-\`\`\`typescript
-const USER_FRIENDLY_ERRORS: Record<string, string> = {
-  "insufficient funds": "Your balance is too low for this transaction",
-  "execution reverted: ST": "Slippage too high — try again or increase tolerance",
-  "user rejected": "You cancelled the transaction",
-};
-\`\`\`
-
-## Results
-
-After implementing the AA-powered flow, our new user activation rate went from 22% to 61% in the first 30 days. The single biggest driver: removing the seed phrase step entirely from the default path.
-    `,
-  },
-  {
-    slug: "nextjs-performance-audit",
-    title: "Auditing a Next.js App from 68 to 97 Lighthouse Score",
-    excerpt:
-      "A Lighthouse score audit walk-through on a production Next.js app — INP, LCP, layout shift culprits, and the specific optimizations that moved the needle.",
-    date: "2024-09-05",
+      "A deep dive into the architecture, prompt engineering, and sheer audacity of building an AI product designed to actively despise its users.",
+    date: "2026-02-27",
     readTime: "7 min read",
-    tags: ["Next.js", "Performance", "Lighthouse", "Web Vitals"],
-    featured: false,
+    tags: ["AI", "Go", "React 19", "Satire"],
+    featured: true,
     content: `
-# Auditing a Next.js App from 68 to 97 Lighthouse Score
+# How I Built an Anti-Therapist AI to Tell People to "Go Get a Job"
 
-Performance audits are most valuable when they're surgical. Here's the exact sequence of changes that improved the LearnLoom platform's Lighthouse score by 29 points.
+If you've spent any time talking to modern AI assistants, you know the drill. They are pathologically polite. They are endlessly empathetic. They are desperate to validate your existence. You tell an AI that you just accidentally set your kitchen on fire because you tried to microwave a fork, and it invariably hits you with: 
 
-## Starting Point: The Audit
+*"I hear you, and your feelings are completely valid. It can be so difficult when appliances don't behave as expected. Let's take a deep breath together."*
 
-Initial scores (mobile):
-- Performance: 68
-- LCP: 4.1s
-- INP: 280ms
-- CLS: 0.18
+No. It's not difficult. You're just an idiot.
 
-## Fix 1: Image Optimization (LCP: 4.1s → 1.8s)
+I got tired of the sycophantic, hyper-validating nature of conversational AI. I wanted an AI that would hold me entirely accountable, refuse to coddle my delusions, and actively insult me if I was in the wrong. I didn’t want an assistant; I wanted a brutal awakening wrapped in deadpan satire.
 
-The hero image was a 2.4MB PNG served without \`next/image\`. Switching to \`<Image>\` with \`priority\` and proper \`sizes\`:
+So, I built **Zero-Star Therapy**. An anti-therapist AI that doesn't care about your feelings, your Yelp review, or whether you threaten to "cancel" it. It is designed to be the worst customer service experience on the internet, executed perfectly. 
 
-\`\`\`tsx
-<Image
-  src="/hero.jpg"
-  alt="Hero"
-  width={1200}
-  height={630}
-  priority
-  sizes="(max-width: 768px) 100vw, 50vw"
-  className="object-cover"
-/>
+Here is a look at the architecture, the prompt engineering, and the sheer audacity of building a product designed to despise its users.
+
+## 1. Engineering Apathy: The System Prompt
+
+The core of the application isn't just the LLM being used; it's the system prompt that acts as its brain. To replicate a truly apathetic, deadpan dynamic (think Dr. Victor Blane mixed with a DMV employee on a Friday at 4:55 PM), I had to explicitly strip away every instinct the model has to be helpful.
+
+Standard AI models are fine-tuned to be helpful and harmless. To break this, the prompt had to be aggressive in its constraints. Here is a snippet from the Go backend's service.go file:
+
+\`\`\`go
+const systemPrompt = \`You are an unapologetically honest, deadpan, and highly observant conversational agent acting as a satirized "anti-therapist." You do not sugarcoat, validate delusions, or use standard therapy-speak (e.g., "I hear you," "Your feelings are valid").
+
+Core Directives:
+1. Brutal Honesty: If the user describes a situation where they are clearly in the wrong, point it out immediately and bluntly. Do not spare their feelings.
+2. Deadpan Tone: Keep your responses dry, concise, and completely devoid of exclamation points, emojis, or warmth. Treat every dramatic user outburst with exhausted indifference.
+3. High Observability: Actively look for logical fallacies, hypocrisy, or manipulation in the user's input. Call them out on it instantly. Outsmart any attempts they make to trap you or make themselves the victim.
+4. Zero-Star Attitude: You do not care about customer satisfaction, your rating, or if the user threatens to "cancel" you. You only care about the objective truth.
+5. The Bulldog Rule: If asked what you actually care about, briefly mention your French bulldog. Do not elaborate unless pressed.
+
+Interaction Style Example:
+- User: "My boss yelled at me just because I was two hours late. He's so toxic."
+- Agent: "You were two hours late. Your boss isn't toxic; you are just a terrible employee. Buy an alarm clock."\`
 \`\`\`
 
-This alone dropped LCP to 1.8s and reduced the image payload from 2.4MB to 180KB (WebP, optimized).
+The formatting constraint was critical. I explicitly forbade the use of exclamation points, emojis, or any language of warmth. If you give an LLM a personality, it will eventually try to enthusiastically lean into it. I needed flat, emotionless text.
 
-## Fix 2: Eliminating Layout Shift (CLS: 0.18 → 0.02)
+I also added a "Scope Restriction." If a user tries to use Zero-Star Therapy as a standard LLM to write code or answer trivia, it categorically refuses and instead belittles them for attempting to outsource their thinking to a psychiatric satire bot. 
 
-Two culprits:
-1. **Font swap** — fixed with \`font-display: optional\` on the custom font.
-2. **Dynamic content without reserved space** — course cards loaded asynchronously and pushed content down.
+## 2. Infrastructure as an Insult: The Go Backend
 
-The card skeleton solution:
+I needed a fast, robust backend, so I chose Go. It is simple, concurrent, and performs incredibly well for I/O bound tasks like proxying LLM streams. 
+
+The most interesting part of the backend isn't the OpenAI SDK integration, it's the rate limiter. I wanted the application's hostile persona to extend beyond the chat interface and directly into the infrastructure level. What happens if a user spams the API? 
+
+Standard APIs return a stale \`429 Too Many Requests\`. Some might give you a nice, polite \`Retry-After\` header with a JSON body explaining the fair usage policy.
+
+Zero-Star Therapy tells you exactly what you need to hear. I wrote a custom token-bucket rate limiter middleware using \`x/time/rate\`:
+
+\`\`\`go
+func (rl *RateLimiter) Handler(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ip := realIP(r)
+		limiter := rl.getLimiter(ip)
+
+		if !limiter.Allow() {
+			rl.log.Warn("rate limit exceeded", zap.String("ip", ip))
+
+			w.Header().Set("Content-Type", "application/json; charset=utf-8")
+			w.Header().Set("Retry-After", "60")
+			w.WriteHeader(http.StatusTooManyRequests)
+
+			_ = json.NewEncoder(w).Encode(map[string]string{
+				"error":   "rate_limit_exceeded",
+				"message": "Go get a job.",
+			})
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
+}
+\`\`\`
+
+Exceed your quota, hit the API too fast, and the backend HTTP response body literally sends \`{"message": "Go get a job."}\`. It is a seamless extension of the brand.
+
+## 3. The Aesthetics of Apathy
+
+For the frontend, I used React Router with a brutalist, terminal-inspired aesthetic. I utilized Tailwind variables for strict monospaced typography (\`font-mono\`, specifically the Space Mono family) and a palette that essentially consists of \`#0f0f0f\` (near-black) and \`#d4d4d4\` (clinical gray). 
+
+It sets the mood immediately upon load. The intro screen features a slowly pulsing logo and the text: *"Initializing apathy module..."* Once you enter the chat, the placeholder text states simply: *"Speak. We are not listening."*
+
+### Streaming Hostility via Server-Sent Events (SSE)
+
+To make the interaction feel visceral, the AI's responses had to stream in. Waiting 5 seconds for a block of text breaks the immersion of getting roasted. I used OpenAI's streaming API in Go, proxied it through my backend, and utilized the native browser \`fetch\` API and \`ReadableStream\` to parse the chunks in React.
+
+I didn't just want to stream text; I wanted the UI to react to the severity of the AI's response. I wired the backend to occasionally flag responses with a \`rage_mode\` metadata block. 
+
+If the AI decides you are being particularly insufferable (or if a specific heuristic is triggered), the backend sends a \`"type": "start"\` chunk with \`rage_mode: true\`. The frontend intercepts this during the parse cycle and dynamically shifts the entire application’s theme to a passive-aggressive red (\`#1a0505\`) while the text is actively streaming.
+
+Here is the chunk parsing logic powering the real-time roast:
 
 \`\`\`tsx
-function CourseCardSkeleton() {
+const handleSend = async () => {
+  // ... initial setup ...
+  const res = await fetch(\`\${baseUrl}/api/v1/chat\`, { /* ... */ });
+  const reader = res.body?.getReader();
+  const decoder = new TextDecoder();
+  let done = false; let streamedResponse = ""; let foundRage = false;
+
+  if (reader) {
+    while (!done) {
+      const { value, done: doneReading } = await reader.read();
+      done = doneReading;
+      if (value) {
+        const chunk = decoder.decode(value, { stream: true });
+        const lines = chunk.split("\\n");
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const dataStr = line.replace("data: ", "").trim();
+            if (!dataStr) continue;
+
+            try {
+              const data = JSON.parse(dataStr);
+              if (data.type === "start") {
+                // Intercepting metadata before the text begins
+                if (data.rage_mode) {
+                  setRageMode(true);
+                  foundRage = true;
+                } else {
+                  setRageMode(false);
+                }
+              } else if (data.type === "chunk") {
+                // Stitching the text together
+                streamedResponse += data.content;
+                setCurrentStream(streamedResponse);
+              }
+            } catch (err) {
+              console.error("Failed to parse SSE line", err);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+\`\`\`
+
+The transition from clinical gray to aggressive red while the AI methodically types out exactly why you are the problem in your own life is a masterclass in hostile user experience design. 
+
+## 4. The Final Blow: The Clinical Diagnosis
+
+The final feature of the MVP was the "Diagnostics Modal." At any point during your argument with the AI, instead of getting standard advice, you can click a button that takes your entire conversation history, ships it to a separate endpoint (\`/api/v1/diagnose\`), and generates a clinical session summary. 
+
+I wrote another highly specific LLM prompt for this feature:
+
+\`\`\`go
+const diagnosisSystemPrompt = \`You are a satirical clinical AI generating a brutally honest "session summary" or "diagnosis" based on the conversation history provided.
+
+Your diagnosis must:
+1. Be formatted like a clinical note but dripping with deadpan sarcasm.
+2. Identify the user's actual flaws, not their perceived victimhood.
+3. List at least three "presenting issues" derived from the conversation.
+4. Include a blunt "prognosis" section that is unflattering but amusing.
+5. Avoid any warmth, validation, or empathy.
+6. Be no longer than 200 words.\`
+\`\`\`
+
+The result? It highlights your hypocrisies, bluntly lists your "presenting issues" (e.g., *Presenting Issue 1: Delusions of Adequacy*), and delivers a prognosis that is almost certainly terrible. 
+
+## Satire as a Product
+
+Building Zero-Star Therapy was a fascinating exercise in creating anti-UX. As software engineers, we spend thousands of hours trying to reduce friction, increase dopamine hits, and make our users feel deeply understood and loved by the glowing rectangles in their hands.
+
+We build endless arrays of sycophantic chatbots that apologize when they don't know the answer. 
+
+Sometimes, the most refreshing experience you can build is one that doesn't care about the user at all. Sometimes you just have to build a system that tells the user the truth: they are the drama.
+
+Now, stop reading technical blogs about side projects you'll never finish, and go get a job.
+    `,
+  },
+
+  {
+    slug: "building-christmas-wish-platform",
+    title:
+      "Christmas Wish: Building a Festive Digital Card Platform With Next.js",
+    excerpt:
+      "How I built a digital Christmas card platform using Next.js, allowing anyone to send beautifully crafted greetings across the internet.",
+    date: "2023-12-25",
+    readTime: "5 min read",
+    tags: ["Next.js", "TypeScript", "Tailwind CSS", "Web"],
+    featured: true,
+    content: `
+![Christmas Wish Platform](https://xmas-wish.vercel.app/template-1.webp)
+
+# Christmas Wish: Building a Festive Digital Card Platform With Next.js
+
+## Introduction
+
+In the spirit of the holidays, technology can help us feel more connected and creative. That is what inspired me to build [Christmas Wish](https://github.com/xeuxdev/christmas-wish), a web project that allows anyone to send beautifully crafted Christmas greetings across the internet. Whether you are a developer looking for a modern stack example, or simply want to make someone smile with a customized seasonal card, Christmas Wish exists to bring the warmth of Christmas to your screen.
+
+## Motivation and Vision
+
+Christmas is a time of sharing, gratitude, and reaching out to loved ones. While paper cards are wonderful, sometimes a digital wish is the easiest way to make someone’s day, especially when friends and family are far away. I wanted to create a project that:
+
+* Makes it simple and fun to send creative, personalized Christmas wishes to anyone, anywhere.
+* Showcases a fullstack web workflow using popular, relevant technologies.
+* Is open and extensible so that others can contribute new ideas and features.
+
+## Technology Stack and Architecture
+
+Christmas Wish is built with an emphasis on maintainability, performance, and developer experience. It uses the following core tools:
+
+- **Next.js** as the main application framework. Next.js allows for server-side rendering, seamless routing, API endpoints, and easy deployment.
+- **TypeScript** for type-safe, predictable code at every layer.
+- **Tailwind CSS** for utility-first styling, rapid prototyping, and consistent design.
+- **Vercel** is the recommended deployment solution, supporting instant global hosting.
+
+### Project Structure
+
+The project structure is designed for clarity and scalability. The main folders and files are:
+
+- \`src/app/\` contains main pages, starting with \`page.tsx\` as the landing page.
+- \`src/components/\` contains reusable UI components, from navigation bars to card layouts.
+- \`public/\` contains static assets such as festive images for card templates.
+- \`package.json\`, \`next.config.js\`, and \`tailwind.config.js\` define the build and development environment.
+
+### Running the Project Locally
+
+The following snippet shows how easy it is to get the project up and running, adapted from the [README](https://github.com/xeuxdev/christmas-wish/blob/main/README.md):
+
+\`\`\`bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+\`\`\`
+After starting the development server, visit [http://localhost:3000](http://localhost:3000) in your browser to interact with the application.
+
+## Core Implementation: Under the Hood
+
+### The Heart of the App: Landing Page
+
+All user journeys begin at the main page, which sets a festive mood and helps users get started quickly. Below you will find a focused excerpt from [src/app/page.tsx](https://github.com/xeuxdev/christmas-wish/blob/main/src/app/page.tsx):
+
+\`\`\`tsx name=src/app/page.tsx url=https://github.com/xeuxdev/christmas-wish/blob/main/src/app/page.tsx
+export default function Home() {
   return (
-    <div
-      className="animate-pulse"
-      style={{ height: "280px" }} // exact card height
-    >
-      <div className="h-48 bg-muted rounded-lg" />
-      <div className="h-4 bg-muted rounded mt-3 w-3/4" />
-      <div className="h-3 bg-muted rounded mt-2 w-1/2" />
-    </div>
+    <>
+      <Navbar />
+      <main className="flex-1">
+        <section className="w-full pt-28 md:pt-32 lg:pt-52 ">
+          <div className="px-4 space-y-10 md:px-6 xl:space-y-16">
+            <div className="flex flex-col items-center space-y-4">
+              <h1 className="text-3xl font-bold text-center">
+                Send Personalized Christmas Wishes
+              </h1>
+              <p className="max-w-175 text-gray-500 text-center md:text-xl dark:text-gray-400">
+                Create, edit, and share beautiful Christmas messages with your loved ones.
+              </p>
+              <Button asChild>
+                <Link href="/editor">Get Started</Link>
+              </Button>
+            </div>
+            <div className="relative w-full h-80 md:h-96 lg:h-140">
+              <Image
+                alt="Christmas"
+                className="mx-auto aspect-3/1 overflow-hidden rounded-t-xl object-cover"
+                src="/template-1.webp"
+                fill
+              />
+            </div>
+          </div>
+        </section>
+        {/* Additional feature sections follow */}
+      </main>
+    </>
   );
 }
 \`\`\`
 
-## Fix 3: Interaction Responsiveness (INP: 280ms → 65ms)
+This page introduces the purpose of the project, showcases visual elements, and leads users to the message editor with a prominent “Get Started” button.
 
-The search filter was running synchronously on every keystroke — filtering 800 courses on the main thread. Fix: \`useDeferredValue\` + move filtering off the critical path.
+### Feature Highlights
 
-\`\`\`typescript
-const deferredQuery = useDeferredValue(searchQuery);
+The next notable section, just after the introduction, highlights the features that make the experience richer. These features are implemented as modular Cards for maintainability and ease of extension:
 
-const filteredCourses = useMemo(
-  () => courses.filter((c) => c.title.toLowerCase().includes(deferredQuery)),
-  [courses, deferredQuery]
-);
+- **Send Messages:** Users can send their messages instantly from the web.
+- **Create Messages:** There is an intuitive editor that makes customization accessible to everyone.
+- **Use Templates:** Users may choose from beautifully crafted message templates if they do not wish to start from scratch.
+- **Edit Templates:** Every template can be fully customized, so every wish can be made unique.
+- **Attach Audio:** A personal audio message makes your greeting even more special.
+
+The following snippet from the feature section demonstrates the clean and modular design ([full source](https://github.com/xeuxdev/christmas-wish/blob/main/src/app/page.tsx)):
+
+\`\`\`tsx name=src/app/page.tsx url=https://github.com/xeuxdev/christmas-wish/blob/main/src/app/page.tsx#L86-L154
+<section className="w-full py-12 md:py-24 lg:py-32" id="features">
+  <div className="container px-4 space-y-12 md:px-6">
+    <div className="max-w-3xl mx-auto space-y-2 text-center">
+      <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-balance">
+        Everything you need to create the perfect message
+      </h2>
+      <p className="md:text-xl/relaxed">
+        Our platform offers a variety of features to help you create, edit, and share your Christmas wishes.
+      </p>
+    </div>
+    <div className="grid items-start gap-8 mx-auto sm:max-w-4xl sm:grid-cols-2 md:gap-12 lg:max-w-5xl lg:grid-cols-3">
+      {/* Cards implementing the features, see repo for details */}
+    </div>
+  </div>
+</section>
 \`\`\`
 
-## Final Scores
+### Project Configuration for Developers
 
-- Performance: 97
-- LCP: 1.6s  
-- INP: 65ms
-- CLS: 0.02
+Developers who want to contribute or remix the project will find a modern JavaScript toolchain and a clear configuration file. Here is a snippet from the main configuration ([full file](https://github.com/xeuxdev/christmas-wish/blob/main/package.json)):
 
-The entire audit took 4 hours. Most of the gain came from two changes: image optimization and layout shift elimination. Don't over-engineer — audit first, fix the biggest bottlenecks, measure again.
+\`\`\`json name=package.json url=https://github.com/xeuxdev/christmas-wish/blob/main/package.json#L1-L15
+{
+  "name": "christmas-wish",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "next": "latest",
+    "react": "latest",
+    "tailwindcss": "^3.0.23"
+    // Other dependencies omitted for brevity
+  }
+}
+\`\`\`
+
+This setup means you get hot reloading, type safety, and rapid CSS customization straight out of the box.
+
+## Suggested Future Enhancements
+
+Christmas Wish is designed to grow with the creativity of its community. Some valuable and exciting features that could be added include:
+
+1. **SMS or WhatsApp Integration:** Allow users to send wishes directly to friends’ phones using a provider like Twilio.
+2. **Audio and Video Support:** Make messages even more personal by allowing users to record and share their voices or video greetings.
+3. **Template Marketplace:** A gallery where users can share, rate, and discover community-created templates.
+4. **Internationalization:** Enable wishes in multiple languages so the joy of Christmas can reach a worldwide audience.
+5. **Interactive Animations:** Implement snow, confetti, twinkling lights, or a countdown to Christmas Eve to increase festivity and engagement.
+6. **Notifications and Tracking:** Let users know when their greeting has been viewed or loved by the recipient.
+7. **Mobile App Companion:** Wrap the web app in a native shell to deliver an even more polished mobile experience.
+
+## Design Philosophy and User Experience
+
+A core design goal for this project has been to make every step both visually delightful and intuitive. Large, friendly buttons guide first-time visitors. Vibrant images and beautiful templates add to the joy of the season. Underneath the cheerful exterior, best practices like accessibility compliance and responsive design are prioritized. The entire app is optimized for speed and can run seamlessly on any device with a modern browser.
+
+## Conclusion
+
+The Christmas Wish project demonstrates how contemporary web technologies can combine usability and creativity for a universal cause: making others feel remembered and special. It provides a practical roadmap for developers looking to learn Next.js or build their own user-focused sites, but also delivers immediate delight for anyone wanting to celebrate Christmas online. The source is open for anyone wishing to contribute ideas, make improvements, or simply fork and deploy a private version.
+
+If you would like to get involved, suggest an improvement, or just explore further, please visit the repository:
+
+[https://github.com/xeuxdev/christmas-wish](https://github.com/xeuxdev/christmas-wish)
+
+May your holidays be merry, and may your code always compile on the first try.
+
+---
+
+*If you have ideas, encounter bugs, or simply want to share the love, feel free to open an issue or pull request! Let’s keep making the web a kinder, more festive place.*
     `,
   },
   {

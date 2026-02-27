@@ -39,9 +39,9 @@ export default function Portfolio() {
       <main className="flex flex-col items-center justify-center space-y-24 pt-24 pb-24 px-6 md:px-0">
         <HeroSection />
         <WorkSection />
+        <ProjectsSection />
         <EducationSection />
         <SkillsSection />
-        <ProjectsSection />
         <BlogSection />
         <ContactSection />
       </main>

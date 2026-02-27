@@ -18,7 +18,7 @@ export interface DockProps {
   direction?: "top" | "middle" | "bottom";
 }
 
-const DEFAULT_MAGNIFICATION = 60;
+const DEFAULT_MAGNIFICATION = 40;
 const DEFAULT_DISTANCE = 140;
 
 const Dock = React.forwardRef<HTMLDivElement, DockProps>(
@@ -32,7 +32,7 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
       direction = "bottom",
       ...props
     },
-    ref
+    ref,
   ) => {
     const mouseX = useMotionValue(Infinity);
 
@@ -56,14 +56,14 @@ const Dock = React.forwardRef<HTMLDivElement, DockProps>(
         onMouseLeave={() => mouseX.set(Infinity)}
         {...props}
         className={cn(
-          "supports-backdrop-blur:bg-white/10 supports-backdrop-blur:dark:bg-black/10 mx-auto mt-8 flex h-[58px] w-max gap-2 rounded-2xl border p-2 backdrop-blur-md",
-          className
+          "supports-backdrop-blur:bg-white/10 supports-backdrop-blur:dark:bg-black/10 mx-auto mt-8 flex h-14.5 w-max gap-2 rounded-2xl border p-2 backdrop-blur-md",
+          className,
         )}
       >
         {renderChildren()}
       </motion.div>
     );
-  }
+  },
 );
 
 Dock.displayName = "Dock";
@@ -101,7 +101,7 @@ const DockIcon = ({
   const widthSync = useTransform(
     distanceCalc,
     [-distance, 0, distance],
-    [40, magnification, 40]
+    [30, magnification, 30],
   );
 
   const width = useSpring(widthSync, {
@@ -116,7 +116,7 @@ const DockIcon = ({
       style={{ width }}
       className={cn(
         "flex aspect-square cursor-pointer items-center justify-center rounded-full",
-        className
+        className,
       )}
       {...props}
     >

@@ -28,15 +28,21 @@ export async function generateMetadata({
 
 // Minimal Markdown-to-HTML renderer
 function renderContent(content: string): string {
-  return content
-    .replace(
-      /```(\w+)?\n([\s\S]*?)```/g,
-      (_, lang, code) =>
-        `<pre><code class="language-${lang ?? "text"}">${code
-          .trim()
-          .replace(/</g, "&lt;")
-          .replace(/>/g, "&gt;")}</code></pre>`,
-    )
+  const codeBlocks: string[] = [];
+
+  let processed = content.replace(
+    /```([\w-]+)?\n([\s\S]*?)```/g,
+    (_, lang, code) => {
+      const html = `<pre><code class="language-${lang ?? "text"}">${code
+        .trim()
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")}</code></pre>`;
+      codeBlocks.push(html);
+      return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+    },
+  );
+
+  processed = processed
     .replace(/^### (.+)$/gm, "<h3>$1</h3>")
     .replace(/^## (.+)$/gm, "<h2>$1</h2>")
     .replace(/^# (.+)$/gm, "<h1>$1</h1>")
@@ -46,10 +52,13 @@ function renderContent(content: string): string {
     .replace(/^- (.+)$/gm, "<li>$1</li>")
     .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
     .replace(/(<li>[\s\S]+?<\/li>)(?!\s*<li>)/g, "<ul>$1</ul>")
-    .replace(/^(?!<[a-z]).+$/gm, (line) =>
+    .replace(/^(?!<[a-z]|__CODE_BLOCK_).+$/gm, (line) =>
       line.trim() ? `<p>${line}</p>` : "",
     )
-    .replace(/\n{3,}/g, "\n\n")
+    .replace(/\n{3,}/g, "\n\n");
+
+  return processed
+    .replace(/__CODE_BLOCK_(\d+)__/g, (_, i) => codeBlocks[Number(i)])
     .trim();
 }
 

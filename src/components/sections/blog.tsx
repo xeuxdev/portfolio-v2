@@ -38,7 +38,7 @@ export function BlogSection() {
                   className="group grid grid-cols-[2rem_1fr] gap-x-4 items-start py-5 border-b border-border/60 last:border-0 transition-all duration-200"
                 >
                   {/* Index number — full muted-foreground, no opacity stacking */}
-                  <span className="font-mono text-[11px] text-muted-foreground pt-[3px] select-none tabular-nums">
+                  <span className="font-mono text-[11px] text-muted-foreground pt-0.75 select-none tabular-nums">
                     {String(i + 1).padStart(2, "0")}
                   </span>
 

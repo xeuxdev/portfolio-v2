@@ -62,7 +62,7 @@ export function HeroSection() {
                   Contact Me
                 </Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
+              <DialogContent className="sm:max-w-106.25">
                 <DialogHeader>
                   <DialogTitle>Contact Me</DialogTitle>
                   <DialogDescription>
