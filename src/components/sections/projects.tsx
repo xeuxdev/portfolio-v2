@@ -14,6 +14,7 @@ import { ArrowUpRight, Globe, LayoutGrid, List } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Icons } from "../ui/icons";
+import Image from "next/image";
 
 const PROJECTS = [
   {
@@ -52,54 +53,54 @@ const PROJECTS = [
     },
     image: "/projects/qmuf.webp",
   },
-  {
-    title: "Magmar Infra",
-    dates: "2024 - Present",
-    description:
-      "An ERC-4337 toolkit for RWA and DePIN, enhancing gasless transactions, social logins, and multi-chain support for secure DeFi accessibility.",
-    tags: ["ERC-4337", "DeFi", "RWA", "Account Abstraction"],
-    links: {
-      website: "https://www.magmarinfra.com/",
-      source: "#",
-    },
-    image: "/projects/magmar-infra.webp",
-  },
-  {
-    title: "Whisper",
-    dates: "2024 - Present",
-    description:
-      "A decentralized wallet-to-wallet messaging platform featuring end-to-end encryption, in-chat crypto transfers, and AI-powered interaction tools.",
-    tags: ["Web3", "Privacy", "Messaging", "Base"],
-    links: {
-      website: "https://www.cryptowhisper.live/",
-      source: "#",
-    },
-    image: "/projects/crypto-whisper.webp",
-  },
-  {
-    title: "Chat AI",
-    dates: "2024 - Present",
-    description:
-      "An AI-powered trading companion that simplifies blockchain interactions through natural language commands for swapping, sniping, and market analysis.",
-    tags: ["AI", "Trading", "BSC", "DeFi"],
-    links: {
-      website: "https://www.chatai.ink/",
-      source: "#",
-    },
-    image: "/projects/chatai.webp",
-  },
-  {
-    title: "Luntra Infrastructure",
-    dates: "2024 - Present",
-    description:
-      "Advanced blockchain infrastructure providing AI-driven wallet intelligence, MEV protection, and hot-swappable MLOps for decentralized applications.",
-    tags: ["Infrastructure", "AI", "Blockchain", "ZK"],
-    links: {
-      website: "https://www.luntrainfrastructure.com/",
-      source: "#",
-    },
-    image: "/projects/luntra-infra.webp",
-  },
+  // {
+  //   title: "Magmar Infra",
+  //   dates: "2024 - Present",
+  //   description:
+  //     "An ERC-4337 toolkit for RWA and DePIN, enhancing gasless transactions, social logins, and multi-chain support for secure DeFi accessibility.",
+  //   tags: ["ERC-4337", "DeFi", "RWA", "Account Abstraction"],
+  //   links: {
+  //     website: "https://www.magmarinfra.com/",
+  //     source: "#",
+  //   },
+  //   image: "/projects/magmar-infra.webp",
+  // },
+  // {
+  //   title: "Whisper",
+  //   dates: "2024 - Present",
+  //   description:
+  //     "A decentralized wallet-to-wallet messaging platform featuring end-to-end encryption, in-chat crypto transfers, and AI-powered interaction tools.",
+  //   tags: ["Web3", "Privacy", "Messaging", "Base"],
+  //   links: {
+  //     website: "https://www.cryptowhisper.live/",
+  //     source: "#",
+  //   },
+  //   image: "/projects/crypto-whisper.webp",
+  // },
+  // {
+  //   title: "Chat AI",
+  //   dates: "2024 - Present",
+  //   description:
+  //     "An AI-powered trading companion that simplifies blockchain interactions through natural language commands for swapping, sniping, and market analysis.",
+  //   tags: ["AI", "Trading", "BSC", "DeFi"],
+  //   links: {
+  //     website: "https://www.chatai.ink/",
+  //     source: "#",
+  //   },
+  //   image: "/projects/chatai.webp",
+  // },
+  // {
+  //   title: "Luntra Infrastructure",
+  //   dates: "2024 - Present",
+  //   description:
+  //     "Advanced blockchain infrastructure providing AI-driven wallet intelligence, MEV protection, and hot-swappable MLOps for decentralized applications.",
+  //   tags: ["Infrastructure", "AI", "Blockchain", "ZK"],
+  //   links: {
+  //     website: "https://www.luntrainfrastructure.com/",
+  //     source: "#",
+  //   },
+  //   image: "/projects/luntra-infra.webp",
+  // },
   {
     title: "LearnLoom",
     dates: "2024 - Present",
@@ -124,24 +125,24 @@ const PROJECTS = [
     },
     image: "/projects/xmas-wish.webp",
   },
-  {
-    title: "CryptoScooby",
-    dates: "2024 - Present",
-    description:
-      "A Web3 incubator and launchpad dedicated to supporting early-stage projects with KYC verification, fair launches, and community-driven incubation.",
-    tags: ["Launchpad", "Incubator", "Web3", "Investment"],
-    links: {
-      website: "https://www.cryptoscooby.com/",
-      source: "#",
-    },
-    image: "/projects/crypto-scobby.webp",
-  },
+  // {
+  //   title: "CryptoScooby",
+  //   dates: "2024 - Present",
+  //   description:
+  //     "A Web3 incubator and launchpad dedicated to supporting early-stage projects with KYC verification, fair launches, and community-driven incubation.",
+  //   tags: ["Launchpad", "Incubator", "Web3", "Investment"],
+  //   links: {
+  //     website: "https://www.cryptoscooby.com/",
+  //     source: "#",
+  //   },
+  //   image: "/projects/crypto-scobby.webp",
+  // },
 ];
 
 type ViewMode = "grid" | "list";
 
 export function ProjectsSection() {
-  const [view, setView] = useState<ViewMode>("grid");
+  const [view, setView] = useState<ViewMode>("list");
 
   return (
     <section id="projects" className="w-full max-w-2xl">
@@ -150,7 +151,7 @@ export function ProjectsSection() {
         <div className="flex items-end justify-between mb-6">
           <div>
             <p className="eyebrow mb-2">Portfolio</p>
-            <h2 className="font-display text-4xl italic">Featured Work</h2>
+            <h2 className="font-mono text-4xl italic">Featured Work</h2>
           </div>
 
           {/* Toggle buttons */}
@@ -191,11 +192,14 @@ export function ProjectsSection() {
                 className="group flex flex-col overflow-hidden border-neutral-200 dark:border-neutral-800 transition-all hover:shadow-lg hover:-translate-y-0.5 h-full p-0 gap-3"
               >
                 {project.image ? (
-                  <img
-                    src={project.image}
-                    alt={project.title}
-                    className="h-40 w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
-                  />
+                  <div className="h-40 w-full relative">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </div>
                 ) : (
                   <div className="h-40 w-full bg-linear-to-br from-neutral-100 to-neutral-200 dark:from-neutral-800 dark:to-neutral-900 group-hover:scale-105 transition-transform duration-500 ease-out flex items-center justify-center">
                     <Globe className="h-8 w-8 text-neutral-400 dark:text-neutral-600" />

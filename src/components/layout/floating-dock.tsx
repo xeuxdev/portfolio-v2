@@ -59,7 +59,11 @@ export function FloatingDock() {
                       className="rounded-full h-10 w-10"
                       asChild
                     >
-                      <Link href={item.href!} target={item.target}>
+                      <Link
+                        href={item.href!}
+                        target={item.target}
+                        aria-label={item.label}
+                      >
                         {item.icon && <item.icon className="h-5 w-5" />}
                       </Link>
                     </Button>

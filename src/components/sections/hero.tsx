@@ -35,13 +35,11 @@ export function HeroSection() {
               <AvatarFallback>TO</AvatarFallback>
             </Avatar>
             <div className="flex flex-col">
-              <h2 className="">
-                <TypingAnimation
-                  text="Hi I'm Xeux"
-                  className="text-left text-2xl font-extrabold leading-none tracking-wider sm:text-2xl md:text-2xl lg:text-3xl"
-                  duration={50}
-                />
-              </h2>
+              <TypingAnimation
+                text="Hi I'm Xeux"
+                className="text-left text-2xl leading-none tracking-wider sm:text-2xl md:text-2xl lg:text-3xl"
+                duration={50}
+              />
             </div>
           </div>
 

@@ -20,7 +20,7 @@ export function ContactSection() {
 
           <div className="relative">
             <p className="eyebrow mb-3">Contact</p>
-            <h2 className="font-display text-4xl italic mb-4 leading-tight">
+            <h2 className="font-mono text-4xl italic mb-4 leading-tight">
               Let&apos;s build something together
             </h2>
             <p className="text-sm text-muted-foreground leading-relaxed mb-8 max-w-sm">

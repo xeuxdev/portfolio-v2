@@ -41,7 +41,7 @@ export default function BlogPage() {
         <BlurFade delay={0.1} inView>
           <div className="mb-16">
             <p className="eyebrow mb-3">Xeuxdev</p>
-            <h1 className="font-display text-6xl italic text-foreground leading-none mb-5">
+            <h1 className="font-mono text-6xl italic text-foreground leading-none mb-5">
               Writing
             </h1>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
@@ -67,12 +67,8 @@ export default function BlogPage() {
 
                 <ol className="flex flex-col">
                   {posts.map((post, i) => (
-                    <BlurFade
-                      key={post.slug}
-                      delay={0.15 + gi * 0.06 + i * 0.05}
-                      inView
-                    >
-                      <li>
+                    <li key={post.slug}>
+                      <BlurFade delay={0.15 + gi * 0.06 + i * 0.05} inView>
                         <Link
                           href={`/blog/${post.slug}`}
                           className="group grid grid-cols-[2rem_1fr] gap-x-4 items-start py-5 border-b border-border/60 last:border-0 transition-colors duration-200"
@@ -123,8 +119,8 @@ export default function BlogPage() {
                             </div>
                           </div>
                         </Link>
-                      </li>
-                    </BlurFade>
+                      </BlurFade>
+                    </li>
                   ))}
                 </ol>
               </div>

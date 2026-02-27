@@ -26,7 +26,7 @@ export function SkillsSection() {
       <BlurFade delay={0.5} inView>
         <div className="mb-8">
           <p className="eyebrow mb-2">Stack</p>
-          <h2 className="font-display text-4xl italic">Skills</h2>
+          <h2 className="font-mono text-4xl italic">Skills</h2>
         </div>
         <div className="relative flex h-25 w-full flex-col items-center justify-center overflow-hidden rounded-lg bg-background">
           <Marquee pauseOnHover className="[--duration:20s]">

@@ -15,7 +15,7 @@ export function BlogSection() {
         <div className="flex items-end justify-between mb-10">
           <div>
             <p className="eyebrow mb-2">Writing</p>
-            <h2 className="font-display text-4xl italic text-foreground">
+            <h2 className="font-mono text-4xl italic text-foreground">
               Selected Posts
             </h2>
           </div>
@@ -31,8 +31,8 @@ export function BlogSection() {
         {/* Indexed post list */}
         <ol className="flex flex-col">
           {featuredPosts.map((post, i) => (
-            <BlurFade key={post.slug} delay={0.68 + i * 0.07} inView>
-              <li>
+            <li key={post.slug}>
+              <BlurFade delay={0.68 + i * 0.07} inView>
                 <Link
                   href={`/blog/${post.slug}`}
                   className="group grid grid-cols-[2rem_1fr] gap-x-4 items-start py-5 border-b border-border/60 last:border-0 transition-all duration-200"
@@ -83,8 +83,8 @@ export function BlogSection() {
                     </div>
                   </div>
                 </Link>
-              </li>
-            </BlurFade>
+              </BlurFade>
+            </li>
           ))}
         </ol>
       </BlurFade>

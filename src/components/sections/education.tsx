@@ -9,7 +9,7 @@ export function EducationSection() {
       <BlurFade delay={0.4} inView>
         <div className="mb-8">
           <p className="eyebrow mb-2">Background</p>
-          <h2 className="font-display text-4xl italic">
+          <h2 className="font-mono text-4xl italic">
             Community &amp; Education
           </h2>
         </div>

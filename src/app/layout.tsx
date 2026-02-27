@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
+import { Geist, Raleway } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -7,15 +7,10 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const raleway = Raleway({
+  variable: "--font-raleway",
   subsets: ["latin"],
-});
-
-const instrumentSerif = Instrument_Serif({
-  variable: "--font-serif",
-  subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500", "600", "700", "800", "900"],
   style: ["normal", "italic"],
 });
 
@@ -90,7 +85,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased scroll-smooth`}
+        className={`${geistSans.variable} ${raleway.variable} antialiased scroll-smooth`}
       >
         <ThemeProvider
           attribute="class"

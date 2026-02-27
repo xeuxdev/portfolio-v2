@@ -70,13 +70,13 @@ export function WorkSection() {
       <BlurFade delay={0.3} inView>
         <div className="mb-8">
           <p className="eyebrow mb-2">Experience</p>
-          <h2 className="font-display text-4xl italic">Work</h2>
+          <h2 className="font-mono text-4xl italic">Work</h2>
         </div>
-        <div className="flex flex-col gap-8">
+        <div className="flex flex-col">
           {WORK_EXPERIENCE.map((job, i) => (
             <div
               key={i}
-              className="relative border-l pl-12 pb-4 transition-all hover:opacity-100 dark:border-white/20"
+              className="relative border-l pl-12 pb-12 last:pb-4 transition-all hover:opacity-100 dark:border-white/20"
             >
               <Avatar className="absolute -left-5 top-0 h-10 w-10 border bg-background">
                 <AvatarImage
