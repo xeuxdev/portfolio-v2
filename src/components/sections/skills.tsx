@@ -23,7 +23,7 @@ const SKILLS = [
 export function SkillsSection() {
   return (
     <section id="skills" className="w-full max-w-2xl overflow-hidden">
-      <BlurFade delay={0.5} inView>
+      <BlurFade delay={0.3} inView>
         <div className="mb-8">
           <p className="eyebrow mb-2">Stack</p>
           <h2 className="font-mono text-4xl italic">Skills</h2>

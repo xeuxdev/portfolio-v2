@@ -6,7 +6,7 @@ import React from "react";
 export function EducationSection() {
   return (
     <section id="education" className="w-full max-w-2xl">
-      <BlurFade delay={0.4} inView>
+      <BlurFade delay={0.3} inView>
         <div className="mb-8">
           <p className="eyebrow mb-2">Background</p>
           <h2 className="font-mono text-4xl italic">

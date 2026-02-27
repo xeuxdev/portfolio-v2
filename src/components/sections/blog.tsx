@@ -10,7 +10,7 @@ export function BlogSection() {
 
   return (
     <section id="blog" className="w-full max-w-2xl">
-      <BlurFade delay={0.65} inView>
+      <BlurFade delay={0.3} inView>
         {/* Section header */}
         <div className="flex items-end justify-between mb-10">
           <div>
