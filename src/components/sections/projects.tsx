@@ -146,7 +146,7 @@ export function ProjectsSection() {
 
   return (
     <section id="projects" className="w-full max-w-2xl">
-      <BlurFade delay={0.6} inView>
+      <BlurFade delay={0.3} inView>
         {/* Header with view toggle */}
         <div className="flex items-end justify-between mb-6">
           <div>
@@ -230,29 +230,26 @@ export function ProjectsSection() {
                   </div>
                 </CardContent>
                 <CardFooter className="flex gap-2 px-4 pb-4 pt-0 mt-auto">
-                  <Link
-                    href={project.links.website}
-                    target="_blank"
-                    className="flex-1"
+                  <Button
+                    size="sm"
+                    className="flex-1 w-full gap-2 h-7 text-xs"
+                    asChild
                   >
-                    <Button size="sm" className="w-full gap-2 h-7 text-xs">
+                    <Link href={project.links.website} target="_blank">
                       <Globe className="h-3 w-3" /> Website
-                    </Button>
-                  </Link>
-                  {project.links.source !== "#" && (
-                    <Link
-                      href={project.links.source}
-                      target="_blank"
-                      className="flex-1"
-                    >
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="w-full gap-1.5 h-7 text-xs"
-                      >
-                        <Icons.github className="size-3" /> Source
-                      </Button>
                     </Link>
+                  </Button>
+                  {project.links.source !== "#" && (
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="flex-1 w-full gap-1.5 h-7 text-xs"
+                      asChild
+                    >
+                      <Link href={project.links.source} target="_blank">
+                        <Icons.github className="size-3" /> Source
+                      </Link>
+                    </Button>
                   )}
                 </CardFooter>
               </Card>

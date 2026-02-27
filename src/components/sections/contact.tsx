@@ -6,7 +6,7 @@ import Link from "next/link";
 export function ContactSection() {
   return (
     <section id="contact" className="w-full max-w-2xl">
-      <BlurFade delay={0.75} inView>
+      <BlurFade delay={0.3} inView>
         <div className="relative rounded-2xl border border-border/60 bg-muted/30 p-8 md:p-10 overflow-hidden">
           {/* Subtle grid pattern */}
           <div

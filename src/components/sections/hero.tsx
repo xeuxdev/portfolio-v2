@@ -49,11 +49,12 @@ export function HeroSection() {
             with a focus on performance optimization and intuitive UX.
           </p>
           <div className="mt-6 flex gap-4">
-            <Link href="#projects">
-              <Button className="rounded-full shadow-2xl transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]">
-                View My Work
-              </Button>
-            </Link>
+            <Button
+              className="rounded-full shadow-2xl transition-all hover:shadow-[0_0_20px_rgba(59,130,246,0.5)]"
+              asChild
+            >
+              <Link href="#projects">View My Work</Link>
+            </Button>
             <Dialog>
               <DialogTrigger asChild>
                 <Button variant="outline" className="rounded-full">

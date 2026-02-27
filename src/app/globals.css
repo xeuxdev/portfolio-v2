@@ -194,6 +194,10 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* Section eyebrow label style */
 .eyebrow {
   font-size: 0.6875rem;
