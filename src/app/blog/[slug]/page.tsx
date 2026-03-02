@@ -4,6 +4,8 @@ import type { Metadata } from "next";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 type BlogPostPageProps = {
   params: Promise<{ slug: string }>;
@@ -26,42 +28,6 @@ export async function generateMetadata({
   };
 }
 
-// Minimal Markdown-to-HTML renderer
-function renderContent(content: string): string {
-  const codeBlocks: string[] = [];
-
-  let processed = content.replace(
-    /```([\w-]+)?\n([\s\S]*?)```/g,
-    (_, lang, code) => {
-      const html = `<pre><code class="language-${lang ?? "text"}">${code
-        .trim()
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")}</code></pre>`;
-      codeBlocks.push(html);
-      return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
-    },
-  );
-
-  processed = processed
-    .replace(/^### (.+)$/gm, "<h3>$1</h3>")
-    .replace(/^## (.+)$/gm, "<h2>$1</h2>")
-    .replace(/^# (.+)$/gm, "<h1>$1</h1>")
-    .replace(/`([^`]+)`/g, "<code>$1</code>")
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    .replace(/^- (.+)$/gm, "<li>$1</li>")
-    .replace(/^\d+\. (.+)$/gm, "<li>$1</li>")
-    .replace(/(<li>[\s\S]+?<\/li>)(?!\s*<li>)/g, "<ul>$1</ul>")
-    .replace(/^(?!<[a-z]|__CODE_BLOCK_).+$/gm, (line) =>
-      line.trim() ? `<p>${line}</p>` : "",
-    )
-    .replace(/\n{3,}/g, "\n\n");
-
-  return processed
-    .replace(/__CODE_BLOCK_(\d+)__/g, (_, i) => codeBlocks[Number(i)])
-    .trim();
-}
-
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = getBlogPost(slug);
@@ -69,8 +35,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) {
     notFound();
   }
-
-  const htmlContent = renderContent(post.content);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -139,8 +103,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               prose-pre:bg-muted/60 prose-pre:border prose-pre:border-border prose-pre:rounded-lg prose-pre:p-5 prose-pre:overflow-x-auto prose-pre:my-6 prose-pre:text-[0.8em] prose-pre:leading-relaxed
               prose-pre:code:bg-transparent prose-pre:code:px-0 prose-pre:code:py-0 prose-pre:code:rounded-none
             "
-            dangerouslySetInnerHTML={{ __html: htmlContent }}
-          />
+          >
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.content}
+            </ReactMarkdown>
+          </article>
         </BlurFade>
 
         {/* Footer */}

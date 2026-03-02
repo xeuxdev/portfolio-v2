@@ -1,5 +1,3 @@
-"use client";
-
 import BlurFade from "@/components/magicui/blur-fade";
 import { formatDate, getFeaturedPosts } from "@/lib/blog";
 import { ArrowUpRight } from "lucide-react";

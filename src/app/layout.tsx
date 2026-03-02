@@ -84,9 +84,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${geistSans.variable} ${raleway.variable} antialiased scroll-smooth`}
-      >
+      <body className={`${geistSans.variable} ${raleway.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

@@ -30,6 +30,18 @@ const PROJECTS = [
     image: "/projects/zerostar.webp",
   },
   {
+    title: "MindEase",
+    dates: "2024 - Present",
+    description:
+      "A real-time AI mental health companion that provides accessible, culturally aware emotional support with streaming responses and crisis detection.",
+    tags: ["AI", "React", "Node.js", "Socket.IO"],
+    links: {
+      website: "https://mindease.xeuxdev.com/",
+      source: "#",
+    },
+    image: "/projects/mindease.webp",
+  },
+  {
     title: "Queen Mother's Universal Foundation",
     dates: "2022 - Present",
     description:
@@ -101,18 +113,18 @@ const PROJECTS = [
   //   },
   //   image: "/projects/luntra-infra.webp",
   // },
-  {
-    title: "LearnLoom",
-    dates: "2024 - Present",
-    description:
-      "A comprehensive e-learning platform connecting students with expert instructors, featuring a diverse catalog of courses across technology, business, and personal development.",
-    tags: ["E-learning", "Next.js", "PostgreSQL", "Education"],
-    links: {
-      website: "https://learnloom.vercel.app/",
-      source: "#",
-    },
-    image: "/projects/learnloom.webp",
-  },
+  // {
+  //   title: "LearnLoom",
+  //   dates: "2024 - Present",
+  //   description:
+  //     "A comprehensive e-learning platform connecting students with expert instructors, featuring a diverse catalog of courses across technology, business, and personal development.",
+  //   tags: ["E-learning", "Next.js", "PostgreSQL", "Education"],
+  //   links: {
+  //     website: "https://learnloom.vercel.app/",
+  //     source: "#",
+  //   },
+  //   image: "/projects/learnloom.webp",
+  // },
   {
     title: "Christmas Wish",
     dates: "2024 - 2024",
@@ -157,18 +169,6 @@ export function ProjectsSection() {
           {/* Toggle buttons */}
           <div className="flex items-center gap-0.5 p-0.5 rounded-lg border border-border/60 bg-muted/30">
             <button
-              id="projects-grid-view"
-              onClick={() => setView("grid")}
-              aria-label="Grid view"
-              className={`p-1.5 rounded-md transition-all duration-150 ${
-                view === "grid"
-                  ? "bg-background text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <LayoutGrid className="h-3.5 w-3.5" />
-            </button>
-            <button
               id="projects-list-view"
               onClick={() => setView("list")}
               aria-label="List view"
@@ -179,6 +179,18 @@ export function ProjectsSection() {
               }`}
             >
               <List className="h-3.5 w-3.5" />
+            </button>
+            <button
+              id="projects-grid-view"
+              onClick={() => setView("grid")}
+              aria-label="Grid view"
+              className={`p-1.5 rounded-md transition-all duration-150 ${
+                view === "grid"
+                  ? "bg-background text-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
